@@ -1,105 +1,111 @@
-#include  <iostream>
-#include <vector>
-#include <string>
 #include "Tile.hpp"
 
-using namespace std;
-namespace ariel
-{
-    Tile::Tile(int id,int value_roll,string type):id(id),value_roll(value_roll),type(type)
-    {
-        this->edges={0,0,0,0,0,0};
-        this->vertexes={{0,0,0,0,0,0,0},{0,0,0,0,0,0,}}; // first matrix is the id of the vertex and the second is the type of the vertex moshav or city
-        this->neighborhoods={}; 
-            }
-    Tile Tile::getTile(int id)
-    {
-        return *this;
-    }
-    vector<int> Tile::getedges()
-    {
-        return this->edges;
-    }
-    vector<std::vector<int>> Tile::getvertexes() const // first matrix is the id of the vertex and the second is the type of the vertex moshav or city
-    {
-        return this->vertexes;
-    }
-    int Tile::getvalue_roll() const
-    {
-        return this->value_roll;
-    }
-    string Tile::gettype()const
-    {
-        return this->type;
-    }
-    int Tile::getid() const // id of the tile
-    {
-        return this->id;
-    }
-    vector<Tile> Tile::getneighborhood() // Vector of Tile pointers
-    {
-        return this->neighborhoods;
-    }
-    int Tile::setedges(int edge ,int id) // edge is the id of the edge and id is the id of the tile
-    {
-        if(this->edges.at(edge)==0)
-        {
-            this->edges.at(id)=edge;
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    int Tile::setvertexes(int index,int id,int type)
-    {
-        if(this->vertexes.at(0).at(index)==0 &&(type==1||type==0)&&(id>=0&&id<3)&&index>=0&&index<6 )
-        {
-            this->vertexes.at(0).at(index)=id;
-            this->vertexes.at(1).at(index)=type;
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    void Tile::operator=(const Tile& other)
-    {
-        this->edges=other.edges;
-        this->vertexes=other.vertexes;
-        this->value_roll=other.value_roll;
-        this->type=other.type;
-        this->id=other.id;
-        this->neighborhoods=other.neighborhoods;
-    }
-    int Tile::setneighborhood(Tile neighborhood,int index)
-    {
-        if(this->neighborhoods.at(index).getid()==0)
-        {
-            this->neighborhoods.at(index)=neighborhood;
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    Tile::Tile(const Tile& other)
-    {
-        this->edges = other.edges;
-        this->vertexes = other.vertexes;
-        this->value_roll = other.value_roll;
-        this->type = other.type;
-        this->id = other.id;
-        this->neighborhoods = other.neighborhoods;
-    }
+namespace ariel {
 
-    Tile::~Tile()
-    {
-        this->edges.clear();
-        this->vertexes.clear();
-        this->neighborhoods.clear();
+Tile::Tile() : id(0), value_roll(0), type("") {
+    this->edges = {0, 0, 0, 0, 0, 0};
+    this->vertexes = {{0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}};
+    for (int i = 0; i < 6; ++i) {
+        neighbors[i] = nullptr;
     }
+}
+
+Tile::Tile(int id, int value_roll, const std::string& type) : id(id), value_roll(value_roll), type(type) {
+    this->edges = {0, 0, 0, 0, 0, 0};
+    this->vertexes = {{0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}};
+    for (int i = 0; i < 6; ++i) {
+        neighbors[i] = nullptr;
+    }
+}
+
+Tile::Tile(const Tile& other) : id(other.id), value_roll(other.value_roll), type(other.type), edges(other.edges), vertexes(other.vertexes) {
+    for (int i = 0; i < 6; ++i) {
+        neighbors[i] = other.neighbors[i];
+    }
+}
+
+Tile::~Tile() {
+    // No need to clear vectors as they are managed by the standard library
+}
+
+int Tile::getid() const {
+    return id;
+}
+
+int Tile::getvalue_roll() const {
+    return value_roll;
+}
+
+std::string Tile::gettype() const {
+    return type;
+}
+
+std::vector<int> Tile::getedges() const {
+    return edges;
+}
+
+std::vector<std::vector<int>> Tile::getvertexes() const {
+    return vertexes;
+}
+
+std::vector<Tile*> Tile::getneighborhood() const {
+    std::vector<Tile*> neighborhood_list(neighbors, neighbors + 6);
+    return neighborhood_list;
+}
+
+int Tile::setedges(int index, int id) {
+    if (index < 0 || index >= 6) return 0;
+    if (neighbors[(index + 1) % 6] && neighbors[(index + 1) % 6]->edges[(index + 3) % 6] == 0) {
+        if (edges[index] == 0) {
+            edges[index] = id;
+            neighbors[(index + 1) % 6]->edges[(index + 3) % 6] = id;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int Tile::setvertexes(int index, int id, int type) {
+    if (index < 0 || index >= 6 || id < 0 || id >= 3 || (type != 0 && type != 1)) return 0;
+    if (vertexes[0][index] == 0) {
+        bool valid = true;
+        for (int i : {index % 6, (index + 1) % 6}) {
+            if (neighbors[i]) {
+                if (i == index % 6 && neighbors[i]->vertexes[0][(index + 2) % 6] != 0) valid = false;
+                if (i == (index + 1) % 6 && neighbors[i]->vertexes[0][(index + 4) % 6] != 0) valid = false;
+            }
+        }
+        if (valid) {
+            vertexes[0][index] = id;
+            vertexes[1][index] = type;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void Tile::setneighborhood(Tile& neighbor, int index) {
+    if (index >= 0 && index < 6) {
+        neighbors[index] = &neighbor;
+    }
+}
+
+bool Tile::operator==(const Tile& other) const {
+    return id == other.id && value_roll == other.value_roll && type == other.type &&
+           edges == other.edges && vertexes == other.vertexes;
+}
+
+Tile& Tile::operator=(const Tile& other) {
+    if (this == &other) return *this;
+    id = other.id;
+    value_roll = other.value_roll;
+    type = other.type;
+    edges = other.edges;
+    vertexes = other.vertexes;
+    for (int i = 0; i < 6; ++i) {
+        neighbors[i] = other.neighbors[i];
+    }
+    return *this;
+}
+
 }
