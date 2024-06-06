@@ -84,6 +84,7 @@ int Tile::setvertexes(int index, int id, int type) {
     return 0;
 }
 
+
 void Tile::setneighborhood(Tile& neighbor, int index) {
     if (index >= 0 && index < 6) {
         neighbors[index] = &neighbor;

@@ -8,7 +8,7 @@
 #include "road_build.hpp"
 #include "monopoly.hpp"
 #include "knights.hpp"
-
+#include <sstream>
 
 using namespace std;
 
@@ -231,6 +231,7 @@ namespace ariel {
             std::cout<<"Road was bought at id:"<<id<<" edge "<<edge<<std::endl;
             return 1;
         }
+        return 0;  
     }
     void Player::display_resources(){
         for (const auto& res : resources) {
@@ -242,51 +243,65 @@ namespace ariel {
             card->display();
         }
     }
+    void to_lowercase(std::string& str) {
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
+std::vector<std::string> splitStringByComma(const std::string& str) {
+    std::vector<std::string> result;
+    std::istringstream stream(str);
+    std::string token;
 
-
-void Player::trade(Player& ask1) {
-    std::string input;
-    std::cout << "Enter the resources you want to receive and give, separated by a comma (e.g., wood, brick): ";
-    std::getline(std::cin, input);
-
-    size_t commaPos = input.find(',');
-    if (commaPos != std::string::npos) {
-        std::string wantResource = input.substr(0, commaPos);
-        std::string giveResource = input.substr(commaPos + 1);
-
+    while (std::getline(stream, token, ',')) {
         // Trim whitespace
-        auto trim = [](std::string& str) {
-            str.erase(0, str.find_first_not_of(" \t\n\r\f\v"));
-            str.erase(str.find_last_not_of(" \t\n\r\f\v") + 1);
-        };
-        trim(wantResource);
-        trim(giveResource);
+        token.erase(0, token.find_first_not_of(" \t\n\r\f\v"));
+        token.erase(token.find_last_not_of(" \t\n\r\f\v") + 1);
+        result.push_back(token);
+    }
 
-        if (ask1.hasResources({wantResource}) && hasResources({giveResource})) {
-            char response;
-            std::cout << "Player " << ask1.getName() << ", do you agree to trade your " << wantResource << " for " << giveResource << "? (y/n): ";
-            std::cin >> response;
-            std::cin.ignore(); // Clear the newline character from the input buffer
-
-            if (response == 'y' || response == 'Y') {
-                ask1.removeResources({wantResource});
-                removeResources({giveResource});
-                add_resources_card(resources_card(wantResource));
-                ask1.add_resources_card(resources_card(giveResource));
-                std::cout << "Trade successful!" << std::endl;
-            } else {
-                std::cout << "Player " << ask1.getName() << " declined the trade." << std::endl;
+    return result;
+}
+void Player::trade(Player& ask1) {
+    std::string resource_take;
+    std::string resource_give;
+    std::cout << "Enter the resource you want to trade: ";
+    std::cin >> resource_take;    
+    std::cout << "Enter the resource you want to give: ";
+    std::cin >> resource_give;
+    std::vector<resources_card> resources_take = ask1.getResources();
+    std::vector<resources_card> resources2_give = getResources();
+    std::vector<std::string> resources_give_str=splitStringByComma(resource_give);
+    std::vector<std::string> resources_take_str=splitStringByComma(resource_take);
+    std::cout << "the ofer is take:"<<resource_take<<" give:"<<resource_give<<std::endl;
+    char answer;
+    std::cout << "Do you accept the trade? (y/n): ";
+    std::cin >> answer;
+    if(answer=='Y'||answer=='y')
+    {
+        if(this->hasResources(resources_give_str)&&ask1.hasResources(resources_take_str))
+        {
+            this->removeResources(resources_give_str);
+            ask1.removeResources(resources_take_str);
+            for(const auto& res:resources_give_str)
+            {
+                ask1.add_resources_card(resources_card(res));
             }
-        } else {
-            if (!ask1.hasResources({wantResource})) {
-                std::cout << "Player " << ask1.getName() << " does not have the requested resource." << std::endl;
+            for(const auto& res:resources_take_str)
+            {
+                this->add_resources_card(resources_card(res));
             }
-            if (!hasResources({giveResource})) {
-                std::cout << "You do not have the resource to trade." << std::endl;
-            }
+            std::cout << "Trade was accepted" << std::endl;
+            std::cout << "Your resources after trade:" << std::endl;
+            this->display_resources();
         }
-    } else {
-        std::cout << "Invalid input. Please enter the resources in the format: resource1, resource2" << std::endl;
+        else
+        {
+            std::cout << "Trade was not accepted" << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "Trade was not accepted" << std::endl;
     }
 }
+
 }

@@ -52,6 +52,7 @@ namespace ariel {
         void processRoadBuildingCard(board& board1);
         bool removeCardOfType(const std::string& card_type);
         void takeResourceFromPlayer(Player& player, const std::string& resource);
+        void to_lowercase(std::string& str);
     };
 }
 
