@@ -2,6 +2,12 @@
 #include "catan.hpp"
 #include "player.hpp"
 #include "board.hpp"
+#include "resources_card.hpp"
+#include "year_of_happy.hpp"
+#include "road_build.hpp"
+#include "monopoly.hpp"
+#include "knights.hpp"
+#include "victory.hpp"
 
 using namespace std;
 using namespace ariel;
@@ -14,14 +20,23 @@ int main() {
     Player p3("Dana");
     std::cout << p3.getName() << std::endl; // should print Dana
 
-    Catan catan(p1, p2, p3);
-    std::cout << "orel" << std::endl; // should print orel
-
-    // Starting of the game. Every player places two settlements and two roads.
-    catan.ChooseStartingPlayer();
-
-    board b;  // Correct initialization of the board object
-    // should print the name of the starting player, assume it is Amit.
+    // Correct initialization of the board object
+    board b;
     b.print_board(); // Call the print_board method on the board object
+
+    // Adding resources to players for testing
+    p1.add_resources_card(resources_card("Sheep"));
+    p1.add_resources_card(resources_card("Clay"));
+    p1.add_resources_card(resources_card("Wheat"));
+
+    // Testing buy function
+    p1.buy();
+
+    // Displaying the cards in player's hand
+    for (auto card : p1.getDevelopment_cards()) {
+        card->display();
+    p1.use(card, p2, p3, b);
+std::cout << "Player 1 score: " << p1.getScore() << std::endl;
+    }
     return 0;
 }

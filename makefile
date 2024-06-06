@@ -1,11 +1,12 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS =-g -std=c++11 -Wall -Wextra -pedantic
+CXXFLAGS = -g -std=c++11 -Wall -Wextra -pedantic
 
 # Directories
 SRC_DIR = .
 OBJ_DIR = obj
 BIN_DIR = bin
+INC_DIR = .
 
 # Source files
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
@@ -28,7 +29,7 @@ $(TARGET): $(OBJ_FILES)
 
 # Compile source files into object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -I$(INC_DIR) -c -o $@ $<
 
 # Clean up object files and executable
 clean:
