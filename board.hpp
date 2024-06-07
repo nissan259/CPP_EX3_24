@@ -1,14 +1,15 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 
-#include "Tile.hpp"
 #include <vector>
 #include <chrono>
 #include <random>
 #include <algorithm>
+#include "Tile.hpp"
+
 
 namespace ariel {
-
+class Tile; // Forward declaration of Tile class
 class board {
 public:
     board();

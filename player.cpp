@@ -13,7 +13,7 @@
 using namespace std;
 
 namespace ariel {
-    int Player::id = 0;
+    int Player::id = -2;
 
     Player::Player(std::string playerName) : name(playerName), score(0) {
         id++;
@@ -52,8 +52,42 @@ namespace ariel {
     void Player::add_const_score(int score) {
         this->score += score;
     }
+    void Player::add_road(std::string road)
+    {
+        roads.push_back(road);
+    }
+    void Player:: add_settlement(std::string settlement)
+    {
+        settlements.push_back(settlement);
+    }
+    void Player:: add_city(std::string city)
+    {
+        cities.push_back(city);
+    }
+    void Player:: display_roads()
+    {
+        std::cout << getName()<<" your are Roads " << std::endl;
+       for(size_t i=0;i<roads.size();i++)
+       {
+           std::cout<<roads.at(i)<<std::endl;
+       }
+    }
+    void Player:: display_settlements()
+    {
+        for (const auto& settlement : settlements) {
+            std::cout << settlement << std::endl;
+        }
+    }
+    void Player::display_cities()
+    {
+        for (const auto& city : cities) {
+            std::cout << city << std::endl;
+        }
+    }
+    
 
-    void Player::buy() {
+
+    void Player::buy_card() {
         cout << "Buying a card" << endl;
         if (hasResources({"Sheep", "Clay", "Wheat"})) {
             removeResources({"Sheep", "Clay", "Wheat"});
@@ -62,6 +96,7 @@ namespace ariel {
             cout << "You do not have the required resources" << endl;
         }
     }
+    
 
     std::string Player::getrandomcard() {
         srand((time(NULL)));
@@ -201,17 +236,121 @@ namespace ariel {
     int Player::getid()const {
         return id;
     }
-    int Player::roll_number() {
+    int Player::roll_number(board& b,Player p1,Player p2) {
         srand(static_cast<unsigned int>(time(0)));
+        int roll= rand() % 6 + 1+rand() % 6 + 1;
+        std::cout<<"The number is:"<<roll<<std::endl;
+           if (roll == 7) {
+        if (getResources().size() > 7) {
+            std::cout << getName() << " has more than 7 resources. Cutting resources by half." << std::endl;
+            int numResourcesToRemove = getResources().size() / 2;
+            for (int i = 0; i < numResourcesToRemove; ++i) {
+                std::string resource;
+                std::cout << "Enter the resource you want to remove: ";
+                std::cin >> resource;
+                removeResources({resource});
+            }
+        } else {
+            std::cout << getName() << " has 7 or fewer resources. No need to remove resources." << std::endl;
+        }
+        
+        if (p1.getResources().size() > 7) {
+            std::cout << p1.getName() << " has more than 7 resources. Cutting resources by half." << std::endl;
+            int numResourcesToRemove = p1.getResources().size() / 2;
+            for (int i = 0; i < numResourcesToRemove; ++i) {
+                std::string resource;
+                std::cout << "Enter the resource you want to remove: ";
+                std::cin >> resource;
+                p1.removeResources({resource});
+            }
+        } else {
+            std::cout << p1.getName() << " has 7 or fewer resources. No need to remove resources." << std::endl;
+        }
+        
+        if (p2.getResources().size() > 7) {
+            std::cout << p2.getName() << " has more than 7 resources. Cutting resources by half." << std::endl;
+            int numResourcesToRemove = p2.getResources().size() / 2;
+            for (int i = 0; i < numResourcesToRemove; ++i) {
+                std::string resource;
+                std::cout << "Enter the resource you want to remove: ";
+                std::cin >> resource;
+                p2.removeResources({resource});
+            }
+        } else {
+            std::cout << p2.getName() << " has 7 or fewer resources. No need to remove resources." << std::endl;
+        }
+        return 1;
+        }
+        for(int i=0;i<19;i++)
+        {
+        if(b.getTile(i).getvalue_roll()==roll)
+        {
+            for(int j=0;j<6;j++)
+            {
+             if(b.getTile(i).getvertexes().at(j).at(0)==p1.getid())
+            {
+                if(b.getTile(i).getvertexes().at(j).at(1)==2)
+                {
+                p1.add_resources_card(resources_card(b.getTile(i).gettype()));
+                p1.add_resources_card(resources_card(b.getTile(i).gettype()));
+                }
+                else
+                {
+                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
+                }
+            }
+            if(b.getTile(i).getvertexes().at(j).at(0)==p2.getid())
+            {
+                if(b.getTile(i).getvertexes().at(j).at(1)==2)
+                {
+                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
+                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
+                }
+                else
+                {
+                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
+                }
+            }
+             if(b.getTile(i).getvertexes().at(j).at(0)==getid())
+            {
+                if(b.getTile(i).getvertexes().at(j).at(1)==2)
+                {
+                add_resources_card(resources_card(b.getTile(i).gettype()));
+                add_resources_card(resources_card(b.getTile(i).gettype()));
+                }
+                else
+                {
+                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
+                }
+            }
+        }
+        }
+    }
+    return 1;
+    }
 
-        return rand() % 6 + 1+rand() % 6 + 1;}
+    int Player::buy_road(int tile,int edge,board& b,int turn){
+        if(turn==0)
+        {
+            std::cout<<"first round"<<std::endl;
+            std::cout<<this->getid()<<std::endl;
 
-    int Player::buy_road(int id,int edge,board& b){
+        if(b.getTile(tile).setedges(edge,getid()))
+         {
+             std::cout<<"Road was bought at id:"<<id<<" edge "<<edge<<std::endl;
+                 std::string type="you have city at id:"+std::to_string(id)+" vertex "+std::to_string(edge);
+                add_road(type);
+                return 1;
+         }
+
+        }
         if(hasResources({"Brick", "Wood"})){
             if(b.getTile(id).setedges(edge,id))
             {
                 removeResources({"Brick", "Wood"});
                 std::cout<<"Road was bought at id:"<<id<<" edge "<<edge<<std::endl;
+                 std::string type="you have city at id:"+std::to_string(id)+" vertex "+std::to_string(edge);
+                add_road(type);
                 return 1;
             }
             else{
@@ -233,7 +372,86 @@ namespace ariel {
         }
         return 0;  
     }
+    int Player::buy_city(int id,int vertex,board& b)
+    {
+
+        if(hasResources({"Clay","Clay", "Wheat", "Clay","Wheat"})){
+            if(b.getTile(id).set_vertex(vertex,id,getid()))
+            {
+                removeResources({"Clay","Clay", "Wheat", "Clay","Wheat"});
+                std::cout<<"Stelment was bought at id:"<<id<<" vertex "<<vertex<<std::endl;
+                b.getTile(id).getvertexes().at(vertex).at(1)=2;
+                add_const_score(1);
+                std::cout<<"you have now "<<getScore()<<" points"<<std::endl;
+                std::string type="you have city at id:"+std::to_string(id)+" vertex "+std::to_string(vertex);
+                
+                add_city(type);
+                return 1;
+            }
+            else{
+                std::cout<<"Stelment was not bought at id:"<<id<<" vertex "<<vertex<<std::endl;
+                return 0;
+            }
+            if(!hasResources({"Clay","Clay", "Wheat", "Clay","Wheat"}))
+            {
+                std::cout<<"Stelment was not bought at you dont have the resources"<<std::endl;
+                return 0;
+            }
+            if (!b.getTile(id).set_vertex(vertex,id,getid()))
+            {
+                std::cout<<"Stelment was not bought beacuse there is stelment"<<std::endl;
+            }
+            removeResources({"Clay","Clay", "Wheat", "Clay","Wheat"});
+            std::cout<<"Stelment was bought at id:"<<id<<" vertex "<<vertex<<std::endl;
+        }
+        return 1;
+    }
+    int Player::buy_stelment(int id,int vertex,board &b,int turn)
+    {
+        if(turn==0)
+        {
+        if(b.getTile(id).set_vertex(vertex,id,getid()))
+         {
+             std::cout<<"Stelment was bought at id:"<<id<<" vertex "<<vertex<<std::endl;
+                 std::string type="you have city at id:"+std::to_string(id)+" vertex "+std::to_string(vertex);
+                 add_const_score(1);
+                add_settlement(type);
+                return 1;
+         }
+
+        }
+        if(hasResources({"Clay","Wood", "Wheat", "Sheep"})){
+            if(b.getTile(id).set_vertex(vertex,id,getid()))
+            {
+                removeResources({"Clay","Wood", "Wheat", "Sheep"});
+                std::cout<<"Stelment was bought at id:"<<id<<" vertex "<<vertex<<std::endl;
+                add_const_score(1);
+              std::string type="you have city at id:"+std::to_string(id)+" vertex "+std::to_string(vertex);
+                add_settlement(type);
+                return 1;
+            }
+            else{
+                std::cout<<"Stelment was not bought at id:"<<id<<" vertex "<<vertex<<std::endl;
+                return 0;
+            }
+            if(!hasResources({"Clay","Wood", "Wheat", "Sheep"}))
+            {
+                std::cout<<"Stelment was not bought at you dont have the resources"<<std::endl;
+                return 0;
+            }
+            if (!b.getTile(id).set_vertex(vertex,id,getid()))
+            {
+                std::cout<<"Stelment was not bought beacuse there is stelment"<<std::endl;
+            }
+            removeResources({"Clay","Wood", "Wheat", "Sheep"});
+            std::cout<<"Stelment was bought at id:"<<id<<" vertex "<<vertex<<std::endl;
+            return 1;
+        }
+        return 0;
+    }
+
     void Player::display_resources(){
+        std::cout<< getName()<<" your are Resources " << std::endl;
         for (const auto& res : resources) {
             std::cout << res.get_type() << std::endl;
         }
@@ -303,5 +521,14 @@ void Player::trade(Player& ask1) {
         std::cout << "Trade was not accepted" << std::endl;
     }
 }
-
+    void Player::end_turn() {
+        std::cout << "Ending turn" <<  std::endl;
+        std::cout << "Your score: " << getScore() << std::endl;
+        display_roads();
+        std::cout << "Your settlements: " << std::endl;
+        display_settlements();
+        display_cities();
+        display_resources();
+        display_development_cards();
+}
 }

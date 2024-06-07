@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "Tile.hpp"
 
 namespace ariel {
 
@@ -108,6 +109,7 @@ board::board() {
 }
 
 Tile& board::getTile(int id) {
+    std::cout<<"orel 1\n";
     return tails[id];
 }
 
