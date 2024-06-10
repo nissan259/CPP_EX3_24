@@ -16,6 +16,8 @@ void print_menu();
 void initialize_game(Player &p1, Player &p2, Player &p3, board &b);
 
 int main() {
+
+    
     Player p1("Orel");
     std::cout << p1.getName() << std::endl; // should print Orel
     Player p2("Nir");
