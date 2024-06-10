@@ -27,7 +27,6 @@ namespace ariel {
     public:
         Player(std::string playerName);
         ~Player(); // Destructor to free allocated memory
-
         std::string getName() const;
         int getScore() const;
         std::vector<development_card*>& getDevelopment_cards();
@@ -38,26 +37,26 @@ namespace ariel {
         void buy_card();
         std::string getrandomcard();
         int use(development_card* card, Player& take1, Player& take2, board& board1);
-        int getid() const;
-       int  roll_number();
+        int getid() ;
        int buy_road(int id,int edge,board& b,int turn);
         void display_resources(); // Declaration of display_resources;
         void display_development_cards(); // Declaration of display_development_cards;
         void trade(Player& ask1); // Declaration of trade;
         int buy_stelment(int id,int vertex,board& b,int turn);
-        int buy_city(int id,int vertex,board& b);
-        int roll_number(board& b,Player p1,Player p2);
+        int buy_city(int id,int vertex,board& b,int turn);
+        int roll_number(board& b, Player &p1, Player& p2);
         void display_roads();
         void display_settlements();
         void display_cities();
         void add_road(std::string road);
         void add_settlement(std::string settlement);
         void add_city(std::string city);
+         development_card* createDevelopmentCard(const std::string& card_type);
+
         void end_turn();
     private:
         bool hasResources(const std::vector<std::string>& required_resources) const;
         void removeResources(const std::vector<std::string>& resources_to_remove);
-        development_card* createDevelopmentCard(const std::string& card_type);
         void processVictoryCard();
         void processKnightCard();
         void processMonopolyCard(Player& take1, Player& take2);

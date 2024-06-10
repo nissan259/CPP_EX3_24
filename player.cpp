@@ -37,6 +37,7 @@ namespace ariel {
         return development_cards;
     }
 
+
     std::vector<resources_card>& Player::getResources() {
         return resources;
     }
@@ -71,6 +72,11 @@ namespace ariel {
        {
            std::cout<<roads.at(i)<<std::endl;
        }
+    }
+    void Player::display_development_cards(){
+        for (const auto& card : getDevelopment_cards()) {
+            card->display();
+        }
     }
     void Player:: display_settlements()
     {
@@ -233,14 +239,15 @@ namespace ariel {
         resources.insert(resources.end(), player_resources.begin(), it);
         player_resources.erase(it, player_resources.end());
     }
-    int Player::getid()const {
+    int Player::getid() {
         return id;
     }
-    int Player::roll_number(board& b,Player p1,Player p2) {
-        srand(static_cast<unsigned int>(time(0)));
-        int roll= rand() % 6 + 1+rand() % 6 + 1;
-        std::cout<<"The number is:"<<roll<<std::endl;
-           if (roll == 7) {
+int Player::roll_number(board& b, Player& p1, Player &p2) {
+    srand(static_cast<unsigned int>(time(0)));
+    int roll = rand() % 6 + 1 + rand() % 6 + 1;
+    std::cout << "The number is: " << roll << std::endl;
+
+    if (roll == 7) {
         if (getResources().size() > 7) {
             std::cout << getName() << " has more than 7 resources. Cutting resources by half." << std::endl;
             int numResourcesToRemove = getResources().size() / 2;
@@ -253,7 +260,7 @@ namespace ariel {
         } else {
             std::cout << getName() << " has 7 or fewer resources. No need to remove resources." << std::endl;
         }
-        
+
         if (p1.getResources().size() > 7) {
             std::cout << p1.getName() << " has more than 7 resources. Cutting resources by half." << std::endl;
             int numResourcesToRemove = p1.getResources().size() / 2;
@@ -266,7 +273,7 @@ namespace ariel {
         } else {
             std::cout << p1.getName() << " has 7 or fewer resources. No need to remove resources." << std::endl;
         }
-        
+
         if (p2.getResources().size() > 7) {
             std::cout << p2.getName() << " has more than 7 resources. Cutting resources by half." << std::endl;
             int numResourcesToRemove = p2.getResources().size() / 2;
@@ -280,54 +287,63 @@ namespace ariel {
             std::cout << p2.getName() << " has 7 or fewer resources. No need to remove resources." << std::endl;
         }
         return 1;
-        }
-        for(int i=0;i<19;i++)
-        {
-        if(b.getTile(i).getvalue_roll()==roll)
-        {
-            for(int j=0;j<6;j++)
-            {
-             if(b.getTile(i).getvertexes().at(j).at(0)==p1.getid())
-            {
-                if(b.getTile(i).getvertexes().at(j).at(1)==2)
-                {
-                p1.add_resources_card(resources_card(b.getTile(i).gettype()));
-                p1.add_resources_card(resources_card(b.getTile(i).gettype()));
-                }
-                else
-                {
-                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
+    }
+    std::cout << "The number is: " << roll << std::endl;
+
+    for (int i = 0; i < 19; i++) {
+        std::cout << "The number is: " << i << std::endl;
+        try {
+            const auto& vertexes = b.getTile(i).getvertexes();
+            if (b.getTile(i).getvalue_roll() == roll) {
+                for (int j = 0; j < 6; j++) {
+                    try {
+                        const auto&type = vertexes[1].at(j);
+                        const auto& id = vertexes[0].at(j);
+                       
+
+                        if (id == p1.getid()) {
+                            if (type == 2) {
+                                p1.add_resources_card(resources_card(b.getTile(i).gettype()));
+                                p1.add_resources_card(resources_card(b.getTile(i).gettype()));
+                            } else if(type==1) {
+                                p1.add_resources_card(resources_card(b.getTile(i).gettype()));
+                            }
+                        }
+                        if (id == p2.getid()) {
+                            if (type == 2) {
+                                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
+                                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
+                            } 
+                            else if(type==1){ {
+                                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
+                            }
+                        }
+                        if (id== getid()) {
+                            if (type== 2) {
+                                add_resources_card(resources_card(b.getTile(i).gettype()));
+                                add_resources_card(resources_card(b.getTile(i).gettype()));
+                            }
+                             else if(type==1) {
+                                add_resources_card(resources_card(b.getTile(i).gettype()));
+                            }
+                        }
+                    }
+                    } catch (const std::out_of_range& e) {
+                        std::cerr << "Out of range exception in roll_number: " << e.what() << std::endl;
+                        continue; // Skip to the next iteration
+                    }
                 }
             }
-            if(b.getTile(i).getvertexes().at(j).at(0)==p2.getid())
-            {
-                if(b.getTile(i).getvertexes().at(j).at(1)==2)
-                {
-                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
-                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
-                }
-                else
-                {
-                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
-                }
-            }
-             if(b.getTile(i).getvertexes().at(j).at(0)==getid())
-            {
-                if(b.getTile(i).getvertexes().at(j).at(1)==2)
-                {
-                add_resources_card(resources_card(b.getTile(i).gettype()));
-                add_resources_card(resources_card(b.getTile(i).gettype()));
-                }
-                else
-                {
-                p2.add_resources_card(resources_card(b.getTile(i).gettype()));
-                }
-            }
-        }
+        } catch (const std::out_of_range& e) {
+            std::cerr << "Out of range exception in roll_number: " << e.what() << std::endl;
+            continue; // Skip to the next iteration
         }
     }
     return 1;
-    }
+}
+
+
+
 
     int Player::buy_road(int tile,int edge,board& b,int turn){
         if(turn==0)
@@ -335,10 +351,10 @@ namespace ariel {
             std::cout<<"first round"<<std::endl;
             std::cout<<this->getid()<<std::endl;
 
-        if(b.getTile(tile).setedges(edge,getid()))
+        if(b.getTile(tile).setedges(edge,id))
          {
-             std::cout<<"Road was bought at id:"<<id<<" edge "<<edge<<std::endl;
-                 std::string type="you have city at id:"+std::to_string(id)+" vertex "+std::to_string(edge);
+             std::cout<<"Road was bought at id:"<<tile<<" edge "<<edge<<std::endl;
+                 std::string type="you have road at id:"+std::to_string(tile)+" vertex "+std::to_string(edge);
                 add_road(type);
                 return 1;
          }
@@ -348,8 +364,8 @@ namespace ariel {
             if(b.getTile(id).setedges(edge,id))
             {
                 removeResources({"Brick", "Wood"});
-                std::cout<<"Road was bought at id:"<<id<<" edge "<<edge<<std::endl;
-                 std::string type="you have city at id:"+std::to_string(id)+" vertex "+std::to_string(edge);
+                std::cout<<"Road was bought at id:"<<tile<<" edge "<<edge<<std::endl;
+                 std::string type="you have city at id:"+std::to_string(tile)+" vertex "+std::to_string(edge);
                 add_road(type);
                 return 1;
             }
@@ -372,15 +388,29 @@ namespace ariel {
         }
         return 0;  
     }
-    int Player::buy_city(int id,int vertex,board& b)
+    int Player::buy_city(int tile,int vertex,board& b,int turn)
     {
+          if(turn==0)
+        {
+            std::cout<<"first round"<<std::endl;
+            std::cout<<this->getid()<<std::endl;
+
+        if(b.getTile(tile).setedges(vertex,getid()))
+         {
+             std::cout<<"Road was bought at tile:"<<tile<<" edge "<<vertex<<std::endl;
+                 std::string type="you have road at id:"+std::to_string(tile)+" vertex "+std::to_string(vertex);
+                add_road(type);
+                return 1;
+         }
+
+        }
 
         if(hasResources({"Clay","Clay", "Wheat", "Clay","Wheat"})){
-            if(b.getTile(id).set_vertex(vertex,id,getid()))
+            if(b.getTile(tile).setedges(vertex,getid()))
             {
                 removeResources({"Clay","Clay", "Wheat", "Clay","Wheat"});
                 std::cout<<"Stelment was bought at id:"<<id<<" vertex "<<vertex<<std::endl;
-                b.getTile(id).getvertexes().at(vertex).at(1)=2;
+                b.getTile(tile).getvertexes().at(vertex).at(1)=2;
                 add_const_score(1);
                 std::cout<<"you have now "<<getScore()<<" points"<<std::endl;
                 std::string type="you have city at id:"+std::to_string(id)+" vertex "+std::to_string(vertex);
@@ -389,7 +419,7 @@ namespace ariel {
                 return 1;
             }
             else{
-                std::cout<<"Stelment was not bought at id:"<<id<<" vertex "<<vertex<<std::endl;
+                std::cout<<"Stelment was not bought at tile:"<<tile<<" vertex "<<vertex<<std::endl;
                 return 0;
             }
             if(!hasResources({"Clay","Clay", "Wheat", "Clay","Wheat"}))
@@ -397,7 +427,7 @@ namespace ariel {
                 std::cout<<"Stelment was not bought at you dont have the resources"<<std::endl;
                 return 0;
             }
-            if (!b.getTile(id).set_vertex(vertex,id,getid()))
+            if (!b.getTile(tile).setedges(vertex,getid()))
             {
                 std::cout<<"Stelment was not bought beacuse there is stelment"<<std::endl;
             }
@@ -408,6 +438,7 @@ namespace ariel {
     }
     int Player::buy_stelment(int id,int vertex,board &b,int turn)
     {
+        
         if(turn==0)
         {
         if(b.getTile(id).set_vertex(vertex,id,getid()))
@@ -456,11 +487,6 @@ namespace ariel {
             std::cout << res.get_type() << std::endl;
         }
     }
-    void Player::display_development_cards(){
-        for (const auto& card : development_cards) {
-            card->display();
-        }
-    }
     void to_lowercase(std::string& str) {
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 }
@@ -478,6 +504,8 @@ std::vector<std::string> splitStringByComma(const std::string& str) {
 
     return result;
 }
+
+
 void Player::trade(Player& ask1) {
     std::string resource_take;
     std::string resource_give;
