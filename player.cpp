@@ -67,7 +67,7 @@ namespace ariel {
     }
     void Player:: display_roads()
     {
-        std::cout << getName()<<" your are Roads " << std::endl;
+        std::cout << getName()<<" your Roads are: " << std::endl;
        for(size_t i=0;i<roads.size();i++)
        {
            std::cout<<roads.at(i)<<std::endl;
@@ -163,11 +163,23 @@ namespace ariel {
         return true;
     }
 
-    void Player::removeResources(const std::vector<std::string>& resources_to_remove) {
-        for (const auto& res : resources_to_remove) {
-            resources.erase(std::remove_if(resources.begin(), resources.end(), [&](resources_card& rc) { return rc.get_type() == res; }), resources.end());
+void Player::removeResources(const std::vector<std::string>& resources_to_remove) {
+    // Create a copy of the resources to remove to keep track of what has been removed
+    std::vector<std::string> to_remove = resources_to_remove;
+
+    for (auto it = to_remove.begin(); it != to_remove.end(); ++it) {
+        // Find the resource in the player's resources
+        auto res_it = std::find_if(resources.begin(), resources.end(),
+            [&](resources_card& rc) {
+                return rc.get_type() == *it;
+            });
+
+        // If found, remove the resource
+        if (res_it != resources.end()) {
+            resources.erase(res_it);
         }
     }
+}
 
     development_card* Player::createDevelopmentCard(const std::string& card_type) {
         std::vector<resources_card> price = { resources_card("Sheep"), resources_card("Clay"), resources_card("Wheat") };
