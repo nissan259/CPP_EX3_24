@@ -73,23 +73,40 @@ namespace ariel {
            std::cout<<roads.at(i)<<std::endl;
        }
     }
-    void Player::display_development_cards(){
-        for (const auto& card : getDevelopment_cards()) {
+ void Player::display_development_cards()
+{
+    if (getDevelopment_cards().empty())
+    {
+        std::cout << getName() << ", you don't have any development cards." << std::endl;
+    }
+    else
+    {
+        for (const auto &card : getDevelopment_cards())
+        {
             card->display();
         }
     }
+}
     void Player:: display_settlements()
     {
         for (const auto& settlement : settlements) {
             std::cout << settlement << std::endl;
         }
     }
-    void Player::display_cities()
+ void Player::display_cities()
+{
+    if (cities.empty())
     {
-        for (const auto& city : cities) {
+        std::cout << getName() << ", you don't have any cities." << std::endl;
+    }
+    else
+    {
+        for (const auto &city : cities)
+        {
             std::cout << city << std::endl;
         }
     }
+}
     
 
 
@@ -315,6 +332,7 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
 
                         if (id == p1.getid()) {
                             if (type == 2) {
+                                cout << "Player 1 gets 2 resources of type " << b.getTile(i).gettype() << std::endl;
                                 p1.add_resources_card(resources_card(b.getTile(i).gettype()));
                                 p1.add_resources_card(resources_card(b.getTile(i).gettype()));
                             } else if(type==1) {
@@ -323,6 +341,7 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
                         }
                         if (id == p2.getid()) {
                             if (type == 2) {
+                                cout << "Player 2 gets 2 resources of type " << b.getTile(i).gettype() << std::endl;
                                 p2.add_resources_card(resources_card(b.getTile(i).gettype()));
                                 p2.add_resources_card(resources_card(b.getTile(i).gettype()));
                             } 
@@ -332,6 +351,7 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
                         }
                         if (id== getid()) {
                             if (type== 2) {
+                                cout << "You get 2 resources of type " << b.getTile(i).gettype() << std::endl;
                                 add_resources_card(resources_card(b.getTile(i).gettype()));
                                 add_resources_card(resources_card(b.getTile(i).gettype()));
                             }
@@ -375,6 +395,7 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
         if(hasResources({"Brick", "Wood"})){
             if(b.getTile(id).setedges(edge,id))
             {
+                std::cout<<"orel"<<id<<" nissan "<<edge<<std::endl;
                 removeResources({"Brick", "Wood"});
                 std::cout<<"Road was bought at id:"<<tile<<" edge "<<edge<<std::endl;
                  std::string type="you have city at id:"+std::to_string(tile)+" vertex "+std::to_string(edge);
@@ -493,12 +514,22 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
         return 0;
     }
 
-    void Player::display_resources(){
-        std::cout<< getName()<<" your are Resources " << std::endl;
-        for (const auto& res : resources) {
+ void Player::display_resources()
+{
+    std::cout << getName() << " your resources are:" << std::endl;
+    if (resources.empty())
+    {
+        std::cout << "You don't have any resources." << std::endl;
+    }
+    else
+    {
+        for (const auto &res : resources)
+        {
             std::cout << res.get_type() << std::endl;
         }
     }
+}
+
     void to_lowercase(std::string& str) {
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 }

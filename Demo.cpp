@@ -8,7 +8,6 @@
 #include "monopoly.hpp"
 #include "knights.hpp"
 #include "victory.hpp"
-
 using namespace std;
 using namespace ariel;
 
@@ -16,8 +15,6 @@ void print_menu();
 void initialize_game(Player &p1, Player &p2, Player &p3, board &b);
 
 int main() {
-
-    
     Player p1("Orel");
     std::cout << p1.getName() << std::endl; // should print Orel
     Player p2("Nir");
@@ -69,7 +66,7 @@ int main() {
 
      initialize_game(p1, p2, p3, b);
 
-    int turn = 0;
+    int turn = 3;
     Player *now_player = nullptr;
 
     while (p1.getScore() <= 10 && p2.getScore() <= 10 && p3.getScore() <= 10) {
@@ -225,96 +222,51 @@ void print_menu() {
 }
 
 void initialize_game(Player &p1, Player &p2, Player &p3, board &b) {
-    int tile, edge, vertex;
-    int counter_roads = 0;
+    int tile, vertex;
     int counter_settlement = 0;
 
     // Initialize for Player 1
-    while (counter_roads < 2 || counter_settlement < 2) {
-        if (counter_roads < 2) {
-            std::cout << "Player 1: Enter the tile and edge you want to set your road:" << std::endl;
-            std::cin >> tile >> edge;
-            try {
-                if (b.getTile(tile).set_first_round_edge(p1, edge)) {
-                    counter_roads++;
-                }
-            } catch (const std::out_of_range& e) {
-                std::cerr << "Out of range exception while Player 1 buys road: " << e.what() << std::endl;
+    while (counter_settlement < 2) {
+        std::cout << "Player 1: Enter the tile and vertex you want to set your settlement:" << std::endl;
+        std::cin >> tile >> vertex;
+        try {
+            if (b.getTile(tile).set_first_round_vertex(p1, vertex)) {
+                counter_settlement++;
             }
-        }
-        if (counter_settlement < 2) {
-            std::cout << "Player 1: Enter the tile and vertex you want to set your settlement:" << std::endl;
-            std::cin >> tile >> vertex;
-            try {
-                int pp= p1.getid();
-                if (b.getTile(tile).set_first_round_vertex(p1, vertex)){
-                    counter_settlement++;
-                }
-            } catch (const std::out_of_range& e) {
-                std::cerr << "Out of range exception while Player 1 buys city: " << e.what() << std::endl;
-            }
+        } catch (const std::out_of_range& e) {
+            std::cerr << "Out of range exception while Player 1 buys settlement: " << e.what() << std::endl;
         }
     }
 
-    // Reset counters for Player 2
-    counter_roads = 0;
+    // Reset counter for Player 2
     counter_settlement = 0;
 
     // Initialize for Player 2
-    while (counter_roads < 2 || counter_settlement < 2) {
-        if (counter_roads < 2) {
-            std::cout << "Player 2: Enter the tile and edge you want to set your road:" << std::endl;
-            std::cin >> tile >> edge;
-            try {
-                if (b.getTile(tile).set_first_round_edge(p2, edge)){
-                    counter_roads++;
-                }
-            } catch (const std::out_of_range& e) {
-                std::cerr << "Out of range exception while Player 2 buys road: " << e.what() << std::endl;
+    while (counter_settlement < 2) {
+        std::cout << "Player 2: Enter the tile and vertex you want to set your settlement:" << std::endl;
+        std::cin >> tile >> vertex;
+        try {
+            if (b.getTile(tile).set_first_round_vertex(p2, vertex)) {
+                counter_settlement++;
             }
-        }
-        if (counter_settlement < 2) {
-            std::cout << "Player 2: Enter the tile and vertex you want to set your settlement:" << std::endl;
-            std::cin >> tile >> vertex;
-            try {
-                int pp= p2.getid();
-                 if (b.getTile(tile).set_first_round_vertex(p2, vertex)) {
-                    counter_settlement++;
-                }
-            } catch (const std::out_of_range& e) {
-                std::cerr << "Out of range exception while Player 2 buys city: " << e.what() << std::endl;
-            }
+        } catch (const std::out_of_range& e) {
+            std::cerr << "Out of range exception while Player 2 buys settlement: " << e.what() << std::endl;
         }
     }
 
-    // Reset counters for Player 3
-    counter_roads = 0;
+    // Reset counter for Player 3
     counter_settlement = 0;
 
     // Initialize for Player 3
-    while (counter_roads < 2 || counter_settlement < 2) {
-        if (counter_roads < 2) {
-            std::cout << "Player 3: Enter the tile and edge you want to set your road:" << std::endl;
-            std::cin >> tile >> edge;
-            try {
-                if (b.getTile(tile).set_first_round_edge(p3, edge)){
-                    counter_roads++;
-                }
-            } catch (const std::out_of_range& e) {
-                std::cerr << "Out of range exception while Player 3 buys road: " << e.what() << std::endl;
+    while (counter_settlement < 2) {
+        std::cout << "Player 3: Enter the tile and vertex you want to set your settlement:" << std::endl;
+        std::cin >> tile >> vertex;
+        try {
+            if (b.getTile(tile).set_first_round_vertex(p3, vertex)) {
+                counter_settlement++;
             }
-        }
-        if (counter_settlement < 2) {
-            std::cout << "Player 3: Enter the tile and vertex you want to set your settlement:" << std::endl;
-            std::cin >> tile >> vertex;
-            try {
-                int pp= p3.getid();
-                if (b.getTile(tile).set_first_round_vertex(p3,vertex)){
-                    counter_settlement++;
-                }
-            } catch (const std::out_of_range& e) {
-                std::cerr << "Out of range exception while Player 3 buys city: " << e.what() << std::endl;
-            }
+        } catch (const std::out_of_range& e) {
+            std::cerr << "Out of range exception while Player 3 buys settlement: " << e.what() << std::endl;
         }
     }
 }

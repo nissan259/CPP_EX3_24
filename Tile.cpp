@@ -887,47 +887,111 @@ namespace ariel
         std::cout << std::endl;
     }
 
-    bool Tile::set_first_round_vertex(Player &player, int &index)
-    { // Set initial vertex where as index is the vertex number
-        if (index < 0 || index >= 7)
+bool Tile::set_first_round_vertex(Player &player, int &index)
+{
+    // Set initial vertex where index is the vertex number
+    if (index < 0 || index >= 7)
+    {
+        std::cerr << "Index out of bounds." << std::endl;
+        return false;
+    }
+    if (vertexes[0][index] == 0)
+    { // Check if the vertex is empty
+        vertexes[0][index] = player.getid(); // Set player ID
+        vertexes[1][index] = 1;
+        std::string settlement_path = "the tile " + std::to_string(this->id) + " put settlement in vertex " + std::to_string(index) + "\n";
+        // Set initial building type (settlement)
+        player.add_settlement(settlement_path);
+
+        // Check and print available positions for setting roads
+        std::vector<int> available_positions;
+        if (edges[index] == 0)
+            available_positions.push_back(index);
+        if (edges[(index + 1) % 6] == 0)
+            available_positions.push_back((index + 1) % 6);
+        
+        int neighbor1_index = (index + 1) % 6;
+        int neighbor2_index = (6 + index - 2) % 6;
+        Tile* neighbor1 = nullptr;
+        Tile* neighbor2 = nullptr;
+        try
         {
-            std::cerr << "Index out of bounds." << std::endl;
-            return false;
+            neighbor1 = getneighborhood().at(neighbor1_index);
         }
-        if (vertexes[0][index] == 0)
-        {                                        // Check if the vertex is empty
-            vertexes[0][index] = player.getid(); // Set player ID
-            vertexes[1][index] = 1;
-            std::string path = "the tile " + std::to_string(this->id) + " put edge in edge " + std::to_string(index) + "\n";
-            // Set initial building type (settlement)
-            player.add_settlement(path);
-            cout << "you can add road either" << to_string(index) << "or" << to_string((index + 1) % 6) <<
-             "or at the"<< to_string((index+1)%6)<<"neigbhor"<<"at the"<<to_string((6+index-2)%6)<< ",for neighbor enter 7"<<endl;
-            int road_index;
+        catch (const std::out_of_range&) {}
+        try
+        {
+            neighbor2 = getneighborhood().at(neighbor2_index);
+        }
+        catch (const std::out_of_range&) {}
+
+        if (neighbor1 && neighbor1->getedges().at(neighbor2_index) == 0)
+            available_positions.push_back(7); // Adding option 7 for neighbor
+
+        // Print available positions
+        cout << "You can add a road at the following positions: ";
+        for (size_t i = 0; i < available_positions.size(); ++i)
+        {
+            if (available_positions[i] == 7)
+                cout << "Press 7 to set at neighbor tile " << neighbor1->getid() << " at road " << neighbor2_index;
+            else
+                cout << available_positions[i];
+            if (i < available_positions.size() - 1)
+                cout << ", ";
+        }
+        cout << endl;
+
+        // Get user's choice
+        int road_index;
+        bool valid_choice = false;
+        while (!valid_choice)
+        {
             cin >> road_index;
-            if (road_index==index || road_index==(index + 1) % 6 )
+            if (std::find(available_positions.begin(), available_positions.end(), road_index) != available_positions.end())
             {
-                edges[index] = player.getid(); // Assign road to player
-                std::string path = "the tile " + std::to_string(this->id) + " put road in edge " + std::to_string(index) + "\n";
-                player.add_road(path);
+                valid_choice = true;
             }
-            else if(road_index==7){
-             try{   getneighborhood().at((index+1)%6)->getedges().at((6+index-2)%6)=id;}
-                catch(const std::exception &e){
-                    cout<<"no  neighbor"<<e.what()<<"please chose different option"<<endl;
+            else
+            {
+                cout << "Invalid choice. Please choose from the available positions: ";
+                for (size_t i = 0; i < available_positions.size(); ++i)
+                {
+                    if (available_positions[i] == 7)
+                        cout << "Press 7 to set at neighbor tile " << neighbor1->getid() << " at road " << neighbor2_index;
+                    else
+                        cout << available_positions[i];
+                    if (i < available_positions.size() - 1)
+                        cout << ", ";
                 }
+                cout << endl;
             }
-            {
-                cout << "please enter a valid option";
-            }
-            return true;
+        }
+
+        // Set the road based on the user's valid choice
+        if (road_index == 7)
+        {
+            neighbor1->getedges().at(neighbor2_index) = player.getid();
+            std::string road_path = "the tile " + std::to_string(neighbor1->getid()) + " put road in edge " + std::to_string(neighbor2_index) + "\n";
+            player.add_road(road_path);
         }
         else
         {
-            std::cerr << "Vertex is already occupied." << std::endl;
-            return false;
+            edges[road_index] = player.getid(); // Assign road to player
+            std::string road_path = "the tile " + std::to_string(this->id) + " put road in edge " + std::to_string(road_index) + "\n";
+            player.add_road(road_path);
         }
+
+        return true;
     }
+    else
+    {
+        std::cerr << "Vertex is already occupied." << std::endl;
+        return false;
+    }
+}
+
+
+
 
     bool Tile::set_first_round_edge(Player &p1, int &index)
     {

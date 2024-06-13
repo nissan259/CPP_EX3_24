@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -g -std=c++11 -Wall -Wextra -pedantic
+CXXFLAGS = -g -std=c++11 -Wall -Wextra -pedantic `pkg-config --cflags opencv4`
 
 # Directories
 SRC_DIR = .
@@ -25,7 +25,7 @@ all: $(TARGET)
 
 # Link object files to create executable
 $(TARGET): $(OBJ_FILES)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -o $@ $^ `pkg-config --libs opencv4`
 
 # Compile source files into object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
