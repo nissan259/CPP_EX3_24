@@ -980,7 +980,7 @@ bool Tile::set_first_round_vertex(Player &player, int &index)
             std::string road_path = "the tile " + std::to_string(this->id) + " put road in edge " + std::to_string(road_index) + "\n";
             player.add_road(road_path);
         }
-
+        player.add_const_score(1);
         return true;
     }
     else

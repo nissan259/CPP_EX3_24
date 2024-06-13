@@ -94,11 +94,11 @@ int main() {
                 break;
             case 2:
                 // display the roads
-                p1.display_roads();
+                now_player->display_roads();
                 break;
             case 3:
                 // display settlements
-                p1.display_settlements();
+                now_player->display_settlements();
                 break;
             case 4:
                 // display cities
@@ -227,8 +227,13 @@ void initialize_game(Player &p1, Player &p2, Player &p3, board &b) {
 
     // Initialize for Player 1
     while (counter_settlement < 2) {
+        
         std::cout << "Player 1: Enter the tile and vertex you want to set your settlement:" << std::endl;
         std::cin >> tile >> vertex;
+        if(tile<0 || tile>18 || vertex<0 || vertex>5){
+            std::cout << "Invalid input, please try again" << std::endl;
+            continue;
+        }
         try {
             if (b.getTile(tile).set_first_round_vertex(p1, vertex)) {
                 counter_settlement++;
@@ -245,6 +250,10 @@ void initialize_game(Player &p1, Player &p2, Player &p3, board &b) {
     while (counter_settlement < 2) {
         std::cout << "Player 2: Enter the tile and vertex you want to set your settlement:" << std::endl;
         std::cin >> tile >> vertex;
+        if(tile<0 || tile>18 || vertex<0 || vertex>5){
+            std::cout << "Invalid input, please try again" << std::endl;
+            continue;
+        }
         try {
             if (b.getTile(tile).set_first_round_vertex(p2, vertex)) {
                 counter_settlement++;
@@ -259,8 +268,13 @@ void initialize_game(Player &p1, Player &p2, Player &p3, board &b) {
 
     // Initialize for Player 3
     while (counter_settlement < 2) {
+    
         std::cout << "Player 3: Enter the tile and vertex you want to set your settlement:" << std::endl;
         std::cin >> tile >> vertex;
+        if(tile<0 || tile>18 || vertex<0 || vertex>5){
+            std::cout << "Invalid input, please try again" << std::endl;
+            continue;
+        }
         try {
             if (b.getTile(tile).set_first_round_vertex(p3, vertex)) {
                 counter_settlement++;

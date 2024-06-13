@@ -9,7 +9,7 @@ namespace ariel {
 // Correct data for 19 tiles including proper initialization
 std::vector<int> number_roll = {5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 11, 3, 4, 5, 6, 0}; // Adjusted order with Desert (0) in the center
 std::vector<std::string> type = {"Wheat", "Wood", "Brick", "Sheep", "Wood", "Brick", "Wheat", "Clay", "Sheep", "Clay", "Wood", "Wheat", "Wood", "Wheat", "Sheep", "Wood", "Clay", "Sheep", "Desert"}; // Adjusted order with Desert at the center
-std::vector<int> id = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}; // Adjusted order
+std::vector<int> id = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}; // Adjusted order
 
 board::board() {
     // Ensure the desert tile is at the correct position

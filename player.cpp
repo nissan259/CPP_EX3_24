@@ -277,97 +277,114 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
     std::cout << "The number is: " << roll << std::endl;
 
     if (roll == 7) {
+        // Handle resources for the current player
         if (getResources().size() > 7) {
+            display_resources();
             std::cout << getName() << " has more than 7 resources. Cutting resources by half." << std::endl;
             int numResourcesToRemove = getResources().size() / 2;
             for (int i = 0; i < numResourcesToRemove; ++i) {
                 std::string resource;
                 std::cout << "Enter the resource you want to remove: ";
                 std::cin >> resource;
-                removeResources({resource});
+                if (hasResources({resource})) {
+                    removeResources({resource});
+                } else {
+                    std::cout << "Resource not found. Please enter a valid resource." << std::endl;
+                    --i;
+                }
             }
         } else {
             std::cout << getName() << " has 7 or fewer resources. No need to remove resources." << std::endl;
         }
 
+        // Handle resources for player 1
         if (p1.getResources().size() > 7) {
+            p1.display_resources();
             std::cout << p1.getName() << " has more than 7 resources. Cutting resources by half." << std::endl;
             int numResourcesToRemove = p1.getResources().size() / 2;
             for (int i = 0; i < numResourcesToRemove; ++i) {
                 std::string resource;
                 std::cout << "Enter the resource you want to remove: ";
                 std::cin >> resource;
-                p1.removeResources({resource});
+                if (p1.hasResources({resource})) {
+                    p1.removeResources({resource});
+                } else {
+                    std::cout << "Resource not found. Please enter a valid resource." << std::endl;
+                    --i;
+                }
             }
         } else {
             std::cout << p1.getName() << " has 7 or fewer resources. No need to remove resources." << std::endl;
         }
 
+        // Handle resources for player 2
         if (p2.getResources().size() > 7) {
+            p2.display_resources();
             std::cout << p2.getName() << " has more than 7 resources. Cutting resources by half." << std::endl;
             int numResourcesToRemove = p2.getResources().size() / 2;
             for (int i = 0; i < numResourcesToRemove; ++i) {
                 std::string resource;
                 std::cout << "Enter the resource you want to remove: ";
                 std::cin >> resource;
-                p2.removeResources({resource});
+                if (p2.hasResources({resource})) {
+                    p2.removeResources({resource});
+                } else {
+                    std::cout << "Resource not found. Please enter a valid resource." << std::endl;
+                    --i;
+                }
             }
         } else {
             std::cout << p2.getName() << " has 7 or fewer resources. No need to remove resources." << std::endl;
         }
         return 1;
     }
-    std::cout << "The number is: " << roll << std::endl;
 
-    for (int i = 0; i < 19; i++) {
+    for (int i = 0; i < 19; ++i) {
         std::cout << "The number is: " << i << std::endl;
         try {
             const auto& vertexes = b.getTile(i).getvertexes();
             if (b.getTile(i).getvalue_roll() == roll) {
-                for (int j = 0; j < 6; j++) {
+                for (int j = 0; j < 6; ++j) {
                     try {
-                        const auto&type = vertexes[1].at(j);
-                        const auto& id = vertexes[0].at(j);
-                       
+                        const auto& type = vertexes.at(1).at(j);
+                        const auto& id = vertexes.at(0).at(j);
 
                         if (id == p1.getid()) {
                             if (type == 2) {
-                                cout << "Player 1 gets 2 resources of type " << b.getTile(i).gettype() << std::endl;
+                                std::cout << "Player 1 gets 2 resources of type " << b.getTile(i).gettype() << std::endl;
                                 p1.add_resources_card(resources_card(b.getTile(i).gettype()));
                                 p1.add_resources_card(resources_card(b.getTile(i).gettype()));
-                            } else if(type==1) {
+                            } else if (type == 1) {
+                                                                std::cout << "Player 1 gets 1 resources of type " << b.getTile(i).gettype() << std::endl;
                                 p1.add_resources_card(resources_card(b.getTile(i).gettype()));
                             }
                         }
                         if (id == p2.getid()) {
                             if (type == 2) {
-                                cout << "Player 2 gets 2 resources of type " << b.getTile(i).gettype() << std::endl;
+                                std::cout << "Player 2 gets 2 resources of type " << b.getTile(i).gettype() << std::endl;
                                 p2.add_resources_card(resources_card(b.getTile(i).gettype()));
                                 p2.add_resources_card(resources_card(b.getTile(i).gettype()));
-                            } 
-                            else if(type==1){ {
+                            } else if (type == 1) {
                                 p2.add_resources_card(resources_card(b.getTile(i).gettype()));
                             }
                         }
-                        if (id== getid()) {
-                            if (type== 2) {
-                                cout << "You get 2 resources of type " << b.getTile(i).gettype() << std::endl;
+                        if (id == getid()) {
+                            if (type == 2) {
+                                std::cout << "You get 2 resources of type " << b.getTile(i).gettype() << std::endl;
                                 add_resources_card(resources_card(b.getTile(i).gettype()));
                                 add_resources_card(resources_card(b.getTile(i).gettype()));
-                            }
-                             else if(type==1) {
+                            } else if (type == 1) {
                                 add_resources_card(resources_card(b.getTile(i).gettype()));
                             }
                         }
-                    }
                     } catch (const std::out_of_range& e) {
-                        std::cerr << "Out of range exception in roll_number: " << e.what() << std::endl;
+                        std::cerr << "Out of range exception in roll_number (inner loop): " << e.what() << std::endl;
                         continue; // Skip to the next iteration
                     }
                 }
             }
         } catch (const std::out_of_range& e) {
-            std::cerr << "Out of range exception in roll_number: " << e.what() << std::endl;
+            std::cerr << "Out of range exception in roll_number (outer loop): " << e.what() << std::endl;
             continue; // Skip to the next iteration
         }
     }
@@ -377,23 +394,10 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
 
 
 
+
     int Player::buy_road(int tile,int edge,board& b,int turn){
-        if(turn==0)
-        {
-            std::cout<<"first round"<<std::endl;
-            std::cout<<this->getid()<<std::endl;
-
-        if(b.getTile(tile).setedges(edge,id))
-         {
-             std::cout<<"Road was bought at id:"<<tile<<" edge "<<edge<<std::endl;
-                 std::string type="you have road at id:"+std::to_string(tile)+" vertex "+std::to_string(edge);
-                add_road(type);
-                return 1;
-         }
-
-        }
         if(hasResources({"Brick", "Wood"})){
-            if(b.getTile(id).setedges(edge,id))
+            if(b.getTile(id).setedges(edge,id)&&turn!=3)
             {
                 std::cout<<"orel"<<id<<" nissan "<<edge<<std::endl;
                 removeResources({"Brick", "Wood"});
@@ -423,31 +427,17 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
     }
     int Player::buy_city(int tile,int vertex,board& b,int turn)
     {
-          if(turn==0)
-        {
-            std::cout<<"first round"<<std::endl;
-            std::cout<<this->getid()<<std::endl;
-
-        if(b.getTile(tile).setedges(vertex,getid()))
-         {
-             std::cout<<"Road was bought at tile:"<<tile<<" edge "<<vertex<<std::endl;
-                 std::string type="you have road at id:"+std::to_string(tile)+" vertex "+std::to_string(vertex);
-                add_road(type);
-                return 1;
-         }
-
-        }
+     
 
         if(hasResources({"Clay","Clay", "Wheat", "Clay","Wheat"})){
-            if(b.getTile(tile).setedges(vertex,getid()))
+            if(b.getTile(tile).getvertexes().at(0).at(0)==id)
             {
                 removeResources({"Clay","Clay", "Wheat", "Clay","Wheat"});
                 std::cout<<"Stelment was bought at id:"<<id<<" vertex "<<vertex<<std::endl;
-                b.getTile(tile).getvertexes().at(vertex).at(1)=2;
+                b.getTile(tile).getvertexes().at(1).at(vertex)=2;
                 add_const_score(1);
                 std::cout<<"you have now "<<getScore()<<" points"<<std::endl;
                 std::string type="you have city at id:"+std::to_string(id)+" vertex "+std::to_string(vertex);
-                
                 add_city(type);
                 return 1;
             }
@@ -471,26 +461,13 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
     }
     int Player::buy_stelment(int id,int vertex,board &b,int turn)
     {
-        
-        if(turn==0)
-        {
-        if(b.getTile(id).set_vertex(vertex,id,getid()))
-         {
-             std::cout<<"Stelment was bought at id:"<<id<<" vertex "<<vertex<<std::endl;
-                 std::string type="you have city at id:"+std::to_string(id)+" vertex "+std::to_string(vertex);
-                 add_const_score(1);
-                add_settlement(type);
-                return 1;
-         }
-
-        }
         if(hasResources({"Clay","Wood", "Wheat", "Sheep"})){
             if(b.getTile(id).set_vertex(vertex,id,getid()))
             {
                 removeResources({"Clay","Wood", "Wheat", "Sheep"});
                 std::cout<<"Stelment was bought at id:"<<id<<" vertex "<<vertex<<std::endl;
                 add_const_score(1);
-              std::string type="you have city at id:"+std::to_string(id)+" vertex "+std::to_string(vertex);
+              std::string type="the tile"+std::to_string(id)+"put settlement in vertex"+std::to_string(vertex);
                 add_settlement(type);
                 return 1;
             }
