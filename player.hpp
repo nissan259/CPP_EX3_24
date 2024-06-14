@@ -49,6 +49,7 @@ namespace ariel {
         void display_settlements();
         void display_cities();
         void add_road(std::string road);
+             void processKnightCard();
         void add_settlement(std::string settlement);
         void add_city(std::string city);
          development_card* createDevelopmentCard(const std::string& card_type);
@@ -58,7 +59,6 @@ namespace ariel {
         bool hasResources(const std::vector<std::string>& required_resources) const;
         void removeResources(const std::vector<std::string>& resources_to_remove);
         void processVictoryCard();
-        void processKnightCard();
         void processMonopolyCard(Player& take1, Player& take2);
         void processYearOfHappyCard();
         void processRoadBuildingCard(board& board1);

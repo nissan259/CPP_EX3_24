@@ -1,5 +1,4 @@
 #include <iostream>
-#include "catan.hpp"
 #include "player.hpp"
 #include "board.hpp"
 #include "resources_card.hpp"
@@ -201,6 +200,18 @@ int main() {
         }
         turn++;
     }
+    if(p1.getScore()>=10){
+        std::cout << "Player 1 wins" << std::endl;
+    }
+    else if(p2.getScore()>=10){
+        std::cout << "Player 2 wins" << std::endl;
+    }
+    else if(p3.getScore()>=10){
+        std::cout << "Player 3 wins" << std::endl;
+    }
+    else{
+        std::cout << "No one wins" << std::endl;
+    }   
 
     return 0;
 }

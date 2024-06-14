@@ -391,10 +391,6 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
     return 1;
 }
 
-
-
-
-
     int Player::buy_road(int tile,int edge,board& b,int turn){
         if(hasResources({"Brick", "Wood"})){
             if(b.getTile(id).setedges(edge,id)&&turn!=3)
@@ -529,9 +525,9 @@ std::vector<std::string> splitStringByComma(const std::string& str) {
 void Player::trade(Player& ask1) {
     std::string resource_take;
     std::string resource_give;
-    std::cout << "Enter the resource you want to trade: ";
+    std::cout << "Enter the resource you want to trade:";
     std::cin >> resource_take;    
-    std::cout << "Enter the resource you want to give: ";
+    std::cout << "Enter the resource you want to give:";
     std::cin >> resource_give;
     std::vector<resources_card> resources_take = ask1.getResources();
     std::vector<resources_card> resources2_give = getResources();
@@ -539,7 +535,7 @@ void Player::trade(Player& ask1) {
     std::vector<std::string> resources_take_str=splitStringByComma(resource_take);
     std::cout << "the ofer is take:"<<resource_take<<" give:"<<resource_give<<std::endl;
     char answer;
-    std::cout << "Do you accept the trade? (y/n): ";
+    std::cout << "Do you accept the trade? (y/n):";
     std::cin >> answer;
     if(answer=='Y'||answer=='y')
     {
