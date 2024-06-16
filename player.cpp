@@ -274,7 +274,6 @@ void Player::removeResources(const std::vector<std::string>& resources_to_remove
 int Player::roll_number(board& b, Player& p1, Player &p2) {
     srand(static_cast<unsigned int>(time(0)));
     int roll = rand() % 6 + 1 + rand() % 6 + 1;
-    std::cout << "The number is: " << roll << std::endl;
 
     if (roll == 7) {
         // Handle resources for the current player
@@ -340,7 +339,6 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
     }
 
     for (int i = 0; i < 19; ++i) {
-        std::cout << "The number is: " << i << std::endl;
         try {
             const auto& vertexes = b.getTile(i).getvertexes();
             if (b.getTile(i).getvalue_roll() == roll) {
@@ -423,8 +421,11 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
     }
     int Player::buy_city(int tile,int vertex,board& b,int turn)
     {
-     
-
+        int y=0;
+        if(turn==0)
+        {
+            y++;
+        }
         if(hasResources({"Clay","Clay", "Wheat", "Clay","Wheat"})){
             if(b.getTile(tile).getvertexes().at(0).at(0)==id)
             {
@@ -457,6 +458,11 @@ int Player::roll_number(board& b, Player& p1, Player &p2) {
     }
     int Player::buy_stelment(int id,int vertex,board &b,int turn)
     {
+         int y=0;
+        if(turn==0)
+        {
+            y++;
+        }
         if(hasResources({"Clay","Wood", "Wheat", "Sheep"})){
             if(b.getTile(id).set_vertex(vertex,id,getid()))
             {

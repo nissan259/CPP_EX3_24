@@ -109,7 +109,6 @@ board::board() {
 }
 
 Tile& board::getTile(int id) {
-    std::cout << "Accessing tile with id: " << id << std::endl;
     int num =tails.size();
     if (id < 0 || id >= num) {
         throw std::out_of_range("Tile id is out of range: " + std::to_string(id));
